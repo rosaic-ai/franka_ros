@@ -30,12 +30,48 @@ realtime_config: ignore
 #   upper_force_thresholds_nominal: [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
 
 collision_config:
-  lower_torque_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
-  upper_torque_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
-  lower_torque_thresholds_nominal: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
-  upper_torque_thresholds_nominal: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
-  lower_force_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm]
-  upper_force_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm]
-  lower_force_thresholds_nominal: [50.0, 50.0, 50.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm]
-  upper_force_thresholds_nominal: [50.0, 50.0, 50.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm]
+  # ============================================================================
+  # [원본 보관용 — 직전 설정] joint torque 30 Nm 은 J5-7 HW 한계(12 Nm)보다 커서
+  # 빨간 LED(tau_j_d_limit_violation) 가 먼저 떠 복구가 어려웠음.
+  # ----------------------------------------------------------------------------
+  # lower_torque_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
+  # upper_torque_thresholds_acceleration: [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
+  # lower_torque_thresholds_nominal:      [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
+  # upper_torque_thresholds_nominal:      [50.0, 50.0, 50.0, 50.0, 30.0, 30.0, 30.0]  # [Nm]
+  # lower_force_thresholds_acceleration: [100.0, 100.0, 100.0, 80.0, 80.0, 80.0]  # [N,N,N, Nm,Nm,Nm]
+  # upper_force_thresholds_acceleration: [100.0, 100.0, 100.0, 80.0, 80.0, 80.0]
+  # lower_force_thresholds_nominal:      [100.0, 100.0, 100.0, 80.0, 80.0, 80.0]
+  # upper_force_thresholds_nominal:      [100.0, 100.0, 100.0, 80.0, 80.0, 80.0]
+  # ============================================================================
+
+  # ============================================================================
+  # [Option A — 직전 보관용]
+  #   K_t=1500/clip_t=0.03, K_r=60/clip_r=0.04 (회전 토크 부족으로 눕는 자세 못 만듦)
+  # ----------------------------------------------------------------------------
+  # lower_torque_thresholds_acceleration: [40.0, 40.0, 40.0, 40.0, 10.0, 10.0, 10.0]
+  # upper_torque_thresholds_acceleration: [40.0, 40.0, 40.0, 40.0, 10.0, 10.0, 10.0]
+  # lower_torque_thresholds_nominal:      [40.0, 40.0, 40.0, 40.0, 10.0, 10.0, 10.0]
+  # upper_torque_thresholds_nominal:      [40.0, 40.0, 40.0, 40.0, 10.0, 10.0, 10.0]
+  # lower_force_thresholds_acceleration: [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]
+  # upper_force_thresholds_acceleration: [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]
+  # lower_force_thresholds_nominal:      [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]
+  # upper_force_thresholds_nominal:      [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]
+  # ============================================================================
+
+  # ============================================================================
+  # [Option MAX-A] — moon.py 게인 (K_t=1500/c_t=0.018, K_r=160/c_r=0.035) 와 매칭
+  #   spring 최대 손목 토크: 1500×0.018×0.15 + 160×0.035 = 4.05 + 5.60 = 9.65 N·m
+  #   motion 중 damping ~2 N·m 추가  →  peak ~11.65 N·m
+  #   J5-7 soft threshold = 11 N·m  <  HW limit 12 N·m  (1 N·m 마진)
+  #   회전 토크 5.6 N·m (woo의 75%) → 눕는 자세 추종 가능
+  #   Cartesian max F_EE = 1500×0.018 = 27 N → force threshold 60 N (2.2× 마진)
+  # ============================================================================
+  lower_torque_thresholds_acceleration: [40.0, 40.0, 40.0, 40.0, 11.0, 11.0, 11.0]  # [Nm]
+  upper_torque_thresholds_acceleration: [40.0, 40.0, 40.0, 40.0, 11.0, 11.0, 11.0]  # [Nm]
+  lower_torque_thresholds_nominal:      [40.0, 40.0, 40.0, 40.0, 11.0, 11.0, 11.0]  # [Nm]
+  upper_torque_thresholds_nominal:      [40.0, 40.0, 40.0, 40.0, 11.0, 11.0, 11.0]  # [Nm]
+  lower_force_thresholds_acceleration: [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]  # [N,N,N, Nm,Nm,Nm]
+  upper_force_thresholds_acceleration: [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]  # [N,N,N, Nm,Nm,Nm]
+  lower_force_thresholds_nominal:      [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]  # [N,N,N, Nm,Nm,Nm]
+  upper_force_thresholds_nominal:      [60.0, 60.0, 60.0, 10.0, 10.0, 10.0]  # [N,N,N, Nm,Nm,Nm]
 
