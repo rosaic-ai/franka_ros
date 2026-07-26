@@ -22,3 +22,17 @@ target_link_libraries(franka_hw_test
 target_include_directories(franka_hw_test PUBLIC
   ${catkin_INCLUDE_DIRS}
 )
+
+catkin_add_gtest(trigger_rate_test
+  trigger_rate_test.cpp
+)
+
+if(TARGET trigger_rate_test)
+  target_link_libraries(trigger_rate_test
+    ${catkin_LIBRARIES}
+    franka_hw
+  )
+  target_include_directories(trigger_rate_test PUBLIC
+    ${catkin_INCLUDE_DIRS}
+  )
+endif()
