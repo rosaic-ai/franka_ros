@@ -10,10 +10,11 @@ class TriggerRate {
  public:
   explicit TriggerRate(double rate = 30.0);
   bool operator()();
+  bool operator()(const ros::Time& now);
 
  private:
+  ros::Duration period_;
   ros::Time time_stamp_;
-  double period_;
 };
 
 };  // namespace franka_hw
