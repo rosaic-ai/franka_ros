@@ -24,6 +24,7 @@ target_include_directories(franka_hw_test PUBLIC
 )
 
 catkin_add_gtest(trigger_rate_test
+  main.cpp
   trigger_rate_test.cpp
 )
 
